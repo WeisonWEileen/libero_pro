@@ -47,6 +47,11 @@ class BDDLBaseDomain(SingleArmEnv):
         controller_configs=None,
         gripper_types="default",
         initialization_noise="default",
+        # 这是调整机械臂的初始位姿噪声分布的
+        # initialization_noise = {
+        # 'magnitude': 1.00,
+        # 'type': 'uniform'
+        # },
         use_latch=False,
         use_camera_obs=True,
         use_object_obs=True,
