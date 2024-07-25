@@ -1,13 +1,3 @@
-"""
-Modified from robosuite example scripts.
-A script to collect a batch of human demonstrations that can be used
-to generate a learning curriculum (see `demo_learning_curriculum.py`).
-
-The demonstrations can be played back using the `playback_demonstrations_from_pkl.py`
-script.
-
-"""
-
 import argparse
 import cv2
 import datetime
@@ -26,7 +16,6 @@ from robosuite.utils.input_utils import input2action
 
 import libero.libero.envs.bddl_utils as BDDLUtils
 from libero.libero.envs import *
-from termcolor import colored
 
 
 def collect_human_trajectory(
@@ -86,6 +75,7 @@ def collect_human_trajectory(
             print("Break")
             saving = False
             break
+
         # Run environment step
 
         env.step(action)
@@ -214,8 +204,8 @@ if __name__ == "__main__":
     parser.add_argument(
         "--robots",
         nargs="+",
-        type=list,
-        default=["Panda"],
+        type=str,
+        default="Panda",
         help="Which robot(s) to use in the env",
     )
     parser.add_argument(
@@ -252,7 +242,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--rot-sensitivity",
         type=float,
-        default=1.5,
+        default=1.0,
         help="How much to scale rotation user inputs",
     )
     parser.add_argument(
@@ -261,14 +251,10 @@ if __name__ == "__main__":
         default=50,
         help="How much to scale rotation user inputs",
     )
-    parser.add_argument("--bddl-file", type=str, default=None)
-    parser.add_argument("--task-id", type=int)
+    parser.add_argument("--bddl-file", type=str)
 
-    # hexi-->dexi 256f-->9583
     parser.add_argument("--vendor-id", type=int, default=9583)
-    # hexi-->dexi c62e-->50734
     parser.add_argument("--product-id", type=int, default=50734)
-    # parser.add_argument("--product-id", type=int, default=49774)
 
     args = parser.parse_args()
 
@@ -289,16 +275,8 @@ if __name__ == "__main__":
     problem_name = problem_info["problem_name"]
     domain_name = problem_info["domain_name"]
     language_instruction = problem_info["language_instruction"]
-    text = colored(language_instruction, "red", attrs=["bold"])
-    print("Goal of the following task: ", text)
-    instruction = colored("Hit any key to proceed to data collection ...", "green", attrs=["reverse", "blink"])
-    print(instruction)
-    input()
-
     if "TwoArm" in problem_name:
         config["env_configuration"] = args.config
-    # print(args.robots, problem_name, TASK_MAPPING[problem_name]) # ['Panda'] libero_tabletop_manipulation
-    # exit()
     print(language_instruction)
     env = TASK_MAPPING[problem_name](
         bddl_file_name=args.bddl_file,
@@ -358,6 +336,7 @@ if __name__ == "__main__":
         f"{domain_name}_ln_{problem_name}_{t1}_{t2}_"
         + language_instruction.replace(" ", "_").strip('""'),
     )
+
     os.makedirs(new_dir)
 
     # collect demonstrations

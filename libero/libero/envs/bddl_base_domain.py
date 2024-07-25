@@ -30,7 +30,6 @@ def register_problem(target_class):
     """We design the mapping to be case-INsensitive."""
     TASK_MAPPING[target_class.__name__.lower()] = target_class
 
-
 import time
 
 

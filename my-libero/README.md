@@ -49,11 +49,37 @@ BDDLBaseDomain继承自robosuite的SingleArmEnv，然后可以一路继承到rob
 所以,
 
 ### bddl 文件相关
-在 ```(:init)```中，如果注释掉```(On flat_stove_1 main_table_stove_region)```这一行的话，启动mujuco仿真环境会卡一会，还有可能卡成自动重启，并且 Terminal 有输出
+BDDL 受 PDDL（Planning Domain Definition Language）的启发，但有所不同，它采用基于谓词逻辑的方式定义每个 BEHAVIOR 活动。
+
+在 ```(:init)```中，会初始化物体，就是决定环境中是否会有这个物体。
+如果```(:init)```中没有物体其它地方代码块用到的话很可能会报下面的Warning，并且环境初始化的时候机械臂很卡，还可能自动重启环境。
 ```
 WARNING: Nan, Inf or huge value in QACC at DOF 15. The simulation is unstable. Time = 49.6800.
+
 ```
 
+- bddl 文件是 pddl 文件的变体，pddl(Planning Domain Deﬁnition Language)文件是，本项目中的```.bddl```文件大部分是 problem文件
+- 范围  ```(x_min, y_min, x_max, y_max)```
+
+### plain table 坐标系
+
+<div style="text-align: center;">
+	<img src="./docs/desk_cor.png" alt="Alt Text" width="500" height="400" />
+</div>
+
+### 代码运行
+```
+python3 scripts/libero_100_collect_demonstrations.py --bddl-file /home/bwshen/LIBERO/libero/libero/bddl_files/libero_spatial/pick_up_the_black_bowl_between_the_plate_and_the_ramekin_and_place_it_on_the_plate.bddl --rot-sensitivity 0.5
+```
+
+### 区域名称合成
+貌似就这样子合成的，关于底层并不清楚
+```
+main_table_plate_region = (plate_region + (:target main_table)
+```
+
+
+- rot-sensitivity 0.2：降低旋转灵敏度，方便控制机器人运动。
 
 ### @TODO
 - 明确```bddl```文件相关 param

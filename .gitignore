@@ -18,3 +18,5 @@ libero.egg-info/
 .vscode/
 
 scripts/demonstration_data/
+
+demonstration_data/tmp
