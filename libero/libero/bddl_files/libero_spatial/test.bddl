@@ -5,70 +5,73 @@
       (plate_region
           (:target main_table)
           (:ranges (
-              (0.05 0.19 0.07 0.21)
+              ; (0.05 0.19 0.07 0.21)
+              (0.05 0.09 0.20 0.24)
             )
           )
       )
-      (next_to_plate_region
-          (:target main_table)
-          (:ranges (
-              (0.0 0.3 0.02 0.32)
-            )
-          )
-      )
+      ; (next_to_plate_region
+      ;     (:target main_table)
+      ;     (:ranges (
+      ;         (0.0 0.3 0.02 0.32)
+      ;       )
+      ;     )
+      ; )
       (box_region
           (:target main_table)
           (:ranges (
-              (0.06 0.02 0.08 0.04)
+            (-0.20 0.05 -0.05 0.20)
             )
           )
       )
-      (next_to_box_region
-          (:target main_table)
-          (:ranges (
-              (0.12 -0.08 0.14 -0.06)
-            )
-          )
-      )
+      ; (next_to_box_region
+      ;     (:target main_table)
+      ;     (:ranges (
+      ;         (0.12 -0.08 0.14 -0.06)
+      ;       )
+      ;     )
+      ; )
       (between_plate_ramekin_region
           (:target main_table)
           (:ranges (
-              (-0.06 0.19 -0.04 0.21)
+              (-0.10 0.20 0.05 0.35)
             )
           )
       )
+
+      ; (bowl_region
+      ;     (:target main_table)
+      ;     (:ranges (
+      ;         (-0.1 0.00 0.05 0.15)
+      ;       )
+      ;     )
+      ; )
       (ramekin_region
           (:target main_table)
           (:ranges (
-              (-0.21 0.19 -0.19 0.21)
+              (-0.45 0.3 -0.30 0.45)
             )
           )
       )
-      (next_to_ramekin_region
-          (:target main_table)
-          (:ranges (
-              (-0.19 0.31 -0.17 0.33)
-            )
-          )
-      )
-      (table_center
-          (:target main_table)
-          (:ranges (
-              (-0.1 -0.01 -0.05 0.01)
-            )
-          )
-      )
-      (table_front
-          (:target main_table)
-          (:ranges (
-              (0.19 -0.01 0.21 0.01)
-            )
-          )
-      )
+
+      ; (table_center
+      ;     (:target main_table)
+      ;     (:ranges (
+      ;         (-0.1 -0.01 -0.05 0.01)
+      ;       )
+      ;     )
+      ; )
+      ; (table_front
+      ;     (:target main_table)
+      ;     (:ranges (
+      ;         (0.19 -0.01 0.21 0.01)
+      ;       )
+      ;     )
+      ; )
       (cabinet_region
           (:target main_table)
           (:ranges (
-              (0.02 -0.28 0.04 -0.26)
+              (0.05 -0.3 0.15 -0.2)
             )
           )
           (:yaw_rotation (
@@ -79,25 +82,25 @@
       (stove_region
           (:target main_table)
           (:ranges (
-              (-0.42 -0.15 -0.4 -0.13)
+              (-0.40 -0.2 -0.3 -0.1)
             )
           )
       )
-      (top_region
-          (:target wooden_cabinet_1)
-      )
-      (middle_region
-          (:target wooden_cabinet_1)
-      )
-      (bottom_region
-          (:target wooden_cabinet_1)
-      )
-      (top_side
-          (:target wooden_cabinet_1)
-      )
-      (cook_region
-          (:target flat_stove_1)
-      )
+      ; (top_region
+      ;     (:target wooden_cabinet_1)
+      ; )
+      ; (middle_region
+      ;     (:target wooden_cabinet_1)
+      ; )
+      ; (bottom_region
+      ;     (:target wooden_cabinet_1)
+      ; )
+      ; (top_side
+      ;     (:target wooden_cabinet_1)
+      ; )
+      ; (cook_region
+      ;     (:target flat_stove_1)
+      ; )
     )
 
   (:fixtures
@@ -107,7 +110,7 @@
   )
 
   (:objects
-    akita_black_bowl_1 akita_black_bowl_2 - akita_black_bowl
+    akita_black_bowl_1 - akita_black_bowl
     cookies_1 - cookies
     glazed_rim_porcelain_ramekin_1 - glazed_rim_porcelain_ramekin
     plate_1 - plate
@@ -120,7 +123,7 @@
 
   (:init
     (On akita_black_bowl_1 main_table_between_plate_ramekin_region)
-    (On akita_black_bowl_2 main_table_next_to_ramekin_region)
+    ; (On akita_black_bowl_1 main_table_bowl_region)
     (On plate_1 main_table_plate_region)
     (On cookies_1 main_table_box_region)
     (On glazed_rim_porcelain_ramekin_1 main_table_ramekin_region)

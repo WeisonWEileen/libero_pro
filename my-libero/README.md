@@ -67,7 +67,7 @@ WARNING: Nan, Inf or huge value in QACC at DOF 15. The simulation is unstable. T
 	<img src="./docs/desk_cor.png" alt="Alt Text" width="500" height="400" />
 </div>
 
-### 代码运行
+### 收集数据
 ```
 python3 scripts/libero_100_collect_demonstrations.py --bddl-file /home/bwshen/LIBERO/libero/libero/bddl_files/libero_spatial/pick_up_the_black_bowl_between_the_plate_and_the_ramekin_and_place_it_on_the_plate.bddl --rot-sensitivity 0.5
 ```
@@ -87,3 +87,4 @@ main_table_plate_region = (plate_region + (:target main_table)
     - 任务 def
 - 修改 3D mouse 的控制模式直接控制 end effector 的位置和状态
 - 数据收集,一个hdf5包括多个视角
+- 查清楚存的是当前时刻的action还是下一个时刻的action
