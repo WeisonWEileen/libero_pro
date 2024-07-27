@@ -34,8 +34,8 @@ def get_default_path_dict(custom_location=None):
         "assets": assets_default_path,
     }
 
-
 def get_libero_path(query_key):
+
     with open(config_file, "r") as f:
         config = dict(yaml.load(f.read(), Loader=yaml.FullLoader))
 

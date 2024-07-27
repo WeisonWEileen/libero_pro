@@ -70,13 +70,15 @@ def main():
     bddl_file_name = f["data"].attrs["bddl_file_name"]
 
     bddl_file_dir = os.path.dirname(bddl_file_name)
-    replace_bddl_prefix = "/".join(bddl_file_dir.split("bddl_files/")[:-1] + "bddl_files")
+    # replace_bddl_prefix = "/".join(bddl_file_dir.split("bddl_files/")[:-1] + "bddl_files")
 
     hdf5_path = os.path.join(get_libero_path("datasets"), bddl_file_dir.split("bddl_files/")[-1].replace(".bddl", "_demo.hdf5"))
 
     output_parent_dir = Path(hdf5_path).parent
     output_parent_dir.mkdir(parents=True, exist_ok=True)
 
+    #测试路径
+    hdf5_path = "/home/bwshen/LIBERO/demonstration_data/robosuite_ln_libero_tabletop_manipulation_1722077082_394896_pick_the_akita_black_bowl_between_the_plate_and_the_ramekin_and_place_it_on_the_plate/test.hdf5"
     h5py_f = h5py.File(hdf5_path, "w")
 
     grp = h5py_f.create_group("data")
@@ -234,7 +236,7 @@ def main():
         dones[-1] = 1
         rewards = np.zeros(len(actions)).astype(np.uint8)
         rewards[-1] = 1
-        print(len(actions), len(agentview_images))
+        print(f"the length of actions is {len(actions)}, agentview_images is {len(agentview_images)}")
         assert len(actions) == len(agentview_images)
         print(len(actions))
 

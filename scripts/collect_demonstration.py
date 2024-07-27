@@ -78,6 +78,7 @@ def collect_human_trajectory(
 
         # Run environment step
 
+        # action起作用
         env.step(action)
         env.render()
         # Also break if we complete the task
