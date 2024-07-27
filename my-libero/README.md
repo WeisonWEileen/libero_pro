@@ -20,12 +20,6 @@ https://blog.csdn.net/qq_40081208/article/details/137675822
 测试3D鼠标是否可以和robosuite环境正常交互
 
 
-### 收集数据
-到```scripts```目录下
-
-```
-python3 libero_100_collect_demonstrations.py --bddl-file /home/bwshen/LIBERO/libero/libero/bddl_files/libero_spatial/pick_up_the_black_bowl_between_the_plate_and_the_ramekin_and_place_it_on_the_plate.bddl
-```
 
 
 ### 增大初始环境分布的variance
@@ -81,12 +75,21 @@ main_table_plate_region = (plate_region + (:target main_table)
 
 1. 收集人类示教控制轨迹，生成一个只含有```action```和```state```的 ```demo.hdf5```文件
 ```
-python3 scripts/libero_100_collect_demonstrations.py --bddl-file /home/bwshen/LIBERO/libero/libero/bddl_files/libero_spatial/pick_up_the_black_bowl_between_the_plate_and_the_ramekin_and_place_it_on_the_plate.bddl --rot-sensitivity 0.5
+python3 scripts/libero_100_collect_demonstrations.py --bddl-file /home/bwshen/LIBERO/libero/libero/bddl_files/libero_spatial/test.bddl --rot-sensitivity 0.5
 ```
 2. 根据上一个步骤生成的```hdf5```文件，生成含有图片数据的完整的```test.hdf5```文件
 ```
 python ./scripts/create_dataset.py --demo-file  /home/bwshen/LIBERO/demonstration_data/robosuite_ln_libero_tabletop_manipulation_1722083401_157395_pick_the_akita_black_bowl_between_the_plate_and_the_ramekin_and_place_it_on_the_plate/demo.hdf5 --use-actions --use-camera-obs
 ```
+生成的文件目录结构
+```
+├──robosuite_ln_libero_tabletop_manipulation_1722083401_157395_pick_the_akita_black_bowl_between_the_plate_and_the_ramekin_and_place_it_on_the_plate
+  ├── demo_full.hdf5
+  └── demo.hdf5
+```
+可以使用这个网站可视化```hdf5```文件
+
+https://myhdf5.hdfgroup.org/
 
 如果想看人操控的playback,可以运行（这个运行参数并不会生成一个新的完整的```hdf5```文件）
 

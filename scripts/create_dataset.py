@@ -72,13 +72,18 @@ def main():
     bddl_file_dir = os.path.dirname(bddl_file_name)
     # replace_bddl_prefix = "/".join(bddl_file_dir.split("bddl_files/")[:-1] + "bddl_files")
 
-    hdf5_path = os.path.join(get_libero_path("datasets"), bddl_file_dir.split("bddl_files/")[-1].replace(".bddl", "_demo.hdf5"))
+    # hdf5_path = os.path.join(get_libero_path("datasets"), bddl_file_dir.split("bddl_files/")[-1].replace(".bddl", "_demo.hdf5"))
 
     output_parent_dir = Path(hdf5_path).parent
     output_parent_dir.mkdir(parents=True, exist_ok=True)
 
-    #测试路径
-    hdf5_path = "/home/bwshen/LIBERO/demonstration_data/robosuite_ln_libero_tabletop_manipulation_1722077082_394896_pick_the_akita_black_bowl_between_the_plate_and_the_ramekin_and_place_it_on_the_plate/test.hdf5"
+    #上下文指定最后的hdf5文件输出的路径，原版代码似乎有问题，是一个路径，并没有具体到一个文件，我注释了。我实现的是直接在demofile的相同目录下生成了一个demo_full.hdf5
+    path_prefix, path_suffix = os.path.splitext(hdf5_path)
+    hdf5_path = path_prefix + "_full" + path_suffix
+
+
+    # #测试路径
+    # hdf5_path = "/home/bwshen/LIBERO/demonstration_data/robosuite_ln_libero_tabletop_manipulation_1722077082_394896_pick_the_akita_black_bowl_between_the_plate_and_the_ramekin_and_place_it_on_the_plate/test.hdf5"
     h5py_f = h5py.File(hdf5_path, "w")
 
     grp = h5py_f.create_group("data")
