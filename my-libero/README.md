@@ -114,20 +114,22 @@ python ./scripts/create_dataset.py --demo-file /home/bwshen/LIBERO/demonstration
 - ~~修改 3D mouse 的控制模式直接控制 end effector 的位置和状态~~
 - ~~数据收集,一个hdf5包括多个视角~~
 - libero_100_collect_demonstrations.py和collect_demonstration.py是一样的
-- action 和 endEffector 是不是同一个坐标系
+- #### action 和 endEffector 是不是同一个坐标系
   
   action中的dpos是相对的，drotation是绝对的，在```input2action()```函数里面有说明
-- 查清楚存的是当前时刻的action还是下一个时刻的action
+- #### 查清楚存的是当前时刻的action还是下一个时刻的action
   
   应该是当前时刻的吧
   ```
   env.step(action)
   env.render()
   ```
-- state 里面的 end effector pose 和 aciton 的区别是什么
+- #### state 里面的 end effector pose 和 aciton 的区别是什么
+
   $$
   \text{end effector pose} = \int{\text{action}\cdot dt}+\text{initial end effector pose}
   $$
+
   对应代码
   ```
   action = np.concatenate([dpos, drotation, [grasp] * gripper_dof])
