@@ -25,25 +25,29 @@ https://blog.csdn.net/qq_40081208/article/details/137675822
 ### 增大初始环境分布的variance
 BDDLBaseDomain继承自robosuite的SingleArmEnv，然后可以一路继承到robot_env.py文件，可以看到这个参数的有关的描述
 ```
-initialization_noise (dict or list of dict): Dict containing the initialization noise parameters.
-The expected keys and corresponding value types are specified below:
-
-:‘magnitude‘: The scale factor of uni-variate random noise applied to each of a robot's given initial
-    joint positions. Setting this value to `None` or 0.0 results in no noise being applied.
-    If "gaussian" type of noise is applied then this magnitude scales the standard deviation applied,
-    If "uniform" type of noise is applied then this magnitude sets the bounds of the sampling range
-:‘type‘: Type of noise to apply. Can either specify "gaussian" or "uniform"
-
-Should either be single dict if same noise value is to be used for all robots or else it should be a
-list of the same length as "robots" param
-
-:Note: Specifying "default" will automatically use the default noise settings.
-    Specifying None will automatically create the required dict with "magnitude" set to 0.0.
+initialization_noise (dict or list of dict): Dict containing the initialization noise parameters ......
 ```
 
 
-### bddl 文件相关
-BDDL 受 PDDL（Planning Domain Definition Language）的启发，但有所不同，它采用基于谓词逻辑的方式定义每个 BEHAVIOR 活动。
+### bddl 描述性文件
+BDDL 受 PDDL（Planning Domain Definition Language）的启发，但有所不同，它采用基于**谓词逻辑**的方式定义每个 BEHAVIOR 活动。
+
+bddl定义了包括
+- 初始化哪些物体
+- 物体的位置的初始分布范围
+- 定义 Task Goals（于Ego4D中的Template提取出来的 language instruction 是一致的）
+
+<div style="text-align: center;">
+	<img src="./docs/bddl.png" alt="Alt Text" width="700" height="300" />
+</div>
+
+### LIBERO 生成新的任务的working pipeline
+
+```mermaid {align="center"} 
+graph TD
+1[extract behavioral temoplates ]-->2[specify initial object distribution] --> 3[specify goals]
+
+```
 
 在 ```(:init)```中，会初始化物体，就是决定环境中是否会有这个物体。
 如果```(:init)```中没有物体其它地方代码块用到的话很可能会报下面的Warning，并且环境初始化的时候机械臂很卡，还可能自动重启环境。
@@ -77,7 +81,7 @@ main_table_plate_region = (plate_region + (:target main_table)
 ```
 python3 scripts/libero_100_collect_demonstrations.py --bddl-file /home/bwshen/LIBERO/libero/libero/bddl_files/libero_spatial/test.bddl --rot-sensitivity 0.5
 ```
-2. 根据上一个步骤生成的```hdf5```文件，生成含有图片数据的完整的```test.hdf5```文件
+2. 根据上一个步骤生成的```demo.hdf5```文件，生成含有图片数据的完整的```demo_full.hdf5```文件
 ```
 python ./scripts/create_dataset.py --demo-file  /home/bwshen/LIBERO/demonstration_data/robosuite_ln_libero_tabletop_manipulation_1722083401_157395_pick_the_akita_black_bowl_between_the_plate_and_the_ramekin_and_place_it_on_the_plate/demo.hdf5 --use-actions --use-camera-obs
 ```
@@ -102,10 +106,11 @@ python ./scripts/create_dataset.py --demo-file /home/bwshen/LIBERO/demonstration
 
 
 ### @TODO
-- 明确```bddl```文件相关 param
-    - 分布 var
-    - 任务 def
-- 修改 3D mouse 的控制模式直接控制 end effector 的位置和状态
-- 数据收集,一个hdf5包括多个视角
+- ~~明确```bddl```文件相关 param~~
+    - ~~分布 var~~
+    - ~~任务 def~~
+- ~~修改 3D mouse 的控制模式直接控制 end effector 的位置和状态~~
+- ~~数据收集,一个hdf5包括多个视角~~
 - 查清楚存的是当前时刻的action还是下一个时刻的action
 - action 和 endEffector 是不是同一个坐标系
+- state 里面的 end effector pose 和 aciton 的区别是什么
