@@ -41,13 +41,15 @@ bddl定义了包括
 	<img src="./docs/bddl.png" alt="Alt Text" width="700" height="300" />
 </div>
 
-### LIBERO 生成新的任务的working pipeline
+### LIBERO 生成新的 Task 的working pipeline
 
 ```mermaid {align="center"} 
 graph TD
-1[extract behavioral temoplates ]-->2[specify initial object distribution] --> 3[specify goals]
-
+  subgraph Robosuite
+    1[extract behavioral temoplates ]-->2[specify initial object distribution] --> 3[specify goals]
+  end
 ```
+
 
 在 ```(:init)```中，会初始化物体，就是决定环境中是否会有这个物体。
 如果```(:init)```中没有物体其它地方代码块用到的话很可能会报下面的Warning，并且环境初始化的时候机械臂很卡，还可能自动重启环境。
@@ -111,6 +113,27 @@ python ./scripts/create_dataset.py --demo-file /home/bwshen/LIBERO/demonstration
     - ~~任务 def~~
 - ~~修改 3D mouse 的控制模式直接控制 end effector 的位置和状态~~
 - ~~数据收集,一个hdf5包括多个视角~~
-- 查清楚存的是当前时刻的action还是下一个时刻的action
+- libero_100_collect_demonstrations.py和collect_demonstration.py是一样的
 - action 和 endEffector 是不是同一个坐标系
+  
+  action中的dpos是相对的，drotation是绝对的，在```input2action()```函数里面有说明
+- 查清楚存的是当前时刻的action还是下一个时刻的action
+  
+  应该是当前时刻的吧
+  ```
+  env.step(action)
+  env.render()
+  ```
 - state 里面的 end effector pose 和 aciton 的区别是什么
+  $$
+  \text{end effector pose} = \int{\text{action}\cdot dt}+\text{initial end effector pose}
+  $$
+  对应代码
+  ```
+  action = np.concatenate([dpos, drotation, [grasp] * gripper_dof])
+  ```
+  然后，环境中运行仿真引擎进行运动学结算。
+  ```
+  env.step(action)
+  ```
+  关于```step()```函数的[定义](https://robosuite.ai/docs/source/robosuite.wrappers.html)
