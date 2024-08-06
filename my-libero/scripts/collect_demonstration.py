@@ -2,7 +2,7 @@ import argparse
 import cv2
 import datetime
 import h5py
-import init_path
+# import init_path
 import json
 import numpy as np
 import os

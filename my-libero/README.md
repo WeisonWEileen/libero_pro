@@ -107,11 +107,24 @@ python ./scripts/create_dataset.py --demo-file /home/bwshen/LIBERO/demonstration
 ```
 
 ### 单位
-```Action```的单位是```cm```，```Obs```的单位是```m```
-![alt text](image.png)
+```Action```的posistion方面的单位是```cm```，```Obs```的单位是```m```
+<div style="text-align: center;">
+	<img src="./docs/image.png" alt="Alt Text" width="400" height="320" />
+</div>
 
-最终的step的作用原理
-![alt text](image-1.png)
+```Action```的rotation方面，分别从弧度和角度方面看似乎没有单位对应的关系
+
+<div style="text-align: center;">
+	<img src="./docs/com.png" alt="Alt Text" width="400" height="320" />
+</div>
+
+
+
+最终的step的最终的结算的源代码
+
+<div style="text-align: center;">
+	<img src="./docs/image-1.png" alt="Alt Text" width="400" height="320" />
+</div>
 
 ### @TODO
 - ~~明确```bddl```文件相关 param~~
@@ -144,3 +157,11 @@ python ./scripts/create_dataset.py --demo-file /home/bwshen/LIBERO/demonstration
   env.step(action)
   ```
   关于```step()```函数的[定义](https://robosuite.ai/docs/source/robosuite.wrappers.html)
+
+### Appendix
+---
+
+state 的 dictionary
+```
+Obs:  odict_keys(['robot0_joint_pos', 'robot0_joint_pos_cos', 'robot0_joint_pos_sin', 'robot0_joint_vel', 'robot0_eef_pos', 'robot0_eef_quat', 'robot0_gripper_qpos', 'robot0_gripper_qvel', 'akita_black_bowl_1_pos', 'akita_black_bowl_1_quat', 'akita_black_bowl_1_to_robot0_eef_pos', 'akita_black_bowl_1_to_robot0_eef_quat', 'cookies_1_pos', 'cookies_1_quat', 'cookies_1_to_robot0_eef_pos', 'cookies_1_to_robot0_eef_quat', 'glazed_rim_porcelain_ramekin_1_pos', 'glazed_rim_porcelain_ramekin_1_quat', 'glazed_rim_porcelain_ramekin_1_to_robot0_eef_pos', 'glazed_rim_porcelain_ramekin_1_to_robot0_eef_quat', 'plate_1_pos', 'plate_1_quat', 'plate_1_to_robot0_eef_pos', 'plate_1_to_robot0_eef_quat', 'robot0_proprio-state', 'object-state'])
+```

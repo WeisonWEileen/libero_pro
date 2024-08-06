@@ -28,6 +28,7 @@ import libero.libero.envs.bddl_utils as BDDLUtils
 from libero.libero.envs import *
 from termcolor import colored
 
+from scipy.spatial.transform import Rotation as R
 
 def collect_human_trajectory(
     env, device, arm, env_configuration, problem_info, remove_directory=[]
@@ -89,9 +90,24 @@ def collect_human_trajectory(
         # Run environment step
 
         obs, reward, done, info = env.step(action)
+
+        # print all the states
+        # print("Obs: ",obs.keys())
+        
         print("Action: ", action)
-        print("Obs: ", obs["robot0_eef_pos"])
+        print("Obs: ", obs["robot0_eef_quat"])
+        # 将四元数转换为Rotation对象
+        r = R.from_quat(obs["robot0_eef_quat"])
+        # 将Rotation对象转换为欧拉角 (假设使用 'xyz' 顺序)
+        euler_angles = r.as_euler('xyz', degrees=True)
+        print("Euler angles: ", euler_angles)
+
+
+
         env.render()
+
+
+
         # Also break if we complete the task
         if task_completion_hold_count == 0:
             break
