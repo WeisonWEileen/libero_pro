@@ -61,11 +61,13 @@ WARNING: Nan, Inf or huge value in QACC at DOF 15. The simulation is unstable. T
 - bddl 文件是 pddl 文件的变体，pddl(Planning Domain Deﬁnition Language)文件是，本项目中的```.bddl```文件大部分是 problem文件
 - 范围  ```(x_min, y_min, x_max, y_max)```
 
-### plain table 坐标系
-可以根据桌子中心的位置去调整物体的相对初始位置
+### 坐标系
+
+世界坐标系，可以根据桌子中心的位置去调整物体的相对初始位置
 <div style="text-align: center;">
 	<img src="./docs/desk_cor.png" alt="Alt Text" width="400" height="320" />
 </div>
+
 
 ### 区域名称合成
 貌似就这样子合成的，关于底层并不清楚
@@ -73,6 +75,7 @@ WARNING: Nan, Inf or huge value in QACC at DOF 15. The simulation is unstable. T
 main_table_plate_region = (plate_region + (:target main_table)
 ```
 
+panda机械臂 effector 坐标系
 
 - rot-sensitivity 0.2：降低旋转灵敏度，方便控制机器人运动。
 
@@ -103,9 +106,12 @@ https://myhdf5.hdfgroup.org/
 python ./scripts/create_dataset.py --demo-file /home/bwshen/LIBERO/demonstration_data/robosuite_ln_libero_tabletop_manipulation_1722077082_394896_pick_the_akita_black_bowl_between_the_plate_and_the_ramekin_and_place_it_on_the_plate/demo.hdf5
 ```
 
+### 单位
+```Action```的单位是```cm```，```Obs```的单位是```m```
+![alt text](image.png)
 
-
-
+最终的step的作用原理
+![alt text](image-1.png)
 
 ### @TODO
 - ~~明确```bddl```文件相关 param~~
@@ -115,8 +121,7 @@ python ./scripts/create_dataset.py --demo-file /home/bwshen/LIBERO/demonstration
 - ~~数据收集,一个hdf5包括多个视角~~
 - libero_100_collect_demonstrations.py和collect_demonstration.py是一样的
 - #### action 和 endEffector 是不是同一个坐标系
-  
-  action中的dpos是相对的，drotation是绝对的，在```input2action()```函数里面有说明
+  经过测试，action中的dpos和drotation都是始终在世界坐标系下的
 - #### 查清楚存的是当前时刻的action还是下一个时刻的action
   
   应该是当前时刻的吧

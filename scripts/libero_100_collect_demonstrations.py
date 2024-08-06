@@ -88,7 +88,9 @@ def collect_human_trajectory(
             break
         # Run environment step
 
-        env.step(action)
+        obs, reward, done, info = env.step(action)
+        print("Action: ", action)
+        print("Obs: ", obs["robot0_eef_pos"])
         env.render()
         # Also break if we complete the task
         if task_completion_hold_count == 0:
@@ -187,6 +189,10 @@ def gather_demonstrations_as_hdf5(
         # write datasets for states and actions
         ep_data_grp.create_dataset("states", data=np.array(states))
         ep_data_grp.create_dataset("actions", data=np.array(actions))
+
+        print("-------states-------")
+        print(states)
+        print("---------states-----")
 
     # write dataset attributes (metadata)
     now = datetime.datetime.now()
@@ -337,6 +343,7 @@ if __name__ == "__main__":
         env.viewer.add_keypress_callback("any", device.on_press)
         env.viewer.add_keyup_callback("any", device.on_release)
         env.viewer.add_keyrepeat_callback("any", device.on_press)
+        
     elif args.device == "spacemouse":
         from robosuite.devices import SpaceMouse
 
