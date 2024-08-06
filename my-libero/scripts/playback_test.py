@@ -1,0 +1,209 @@
+import argparse
+import os
+from pathlib import Path
+import h5py
+import numpy as np
+import json
+import robosuite
+import robosuite.utils.transform_utils as T
+import robosuite.macros as macros
+
+# import init_path
+import libero.libero.utils.utils as libero_utils
+import cv2
+from PIL import Image
+from robosuite.utils import camera_utils
+
+from libero.libero.envs import *
+from libero.libero import get_libero_path
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--demo-file", default="demo.hdf5")
+
+    parser.add_argument(
+        "--use-actions",
+        action="store_true",
+    )
+    parser.add_argument("--use-camera-obs", action="store_true")
+    parser.add_argument(
+        "--dataset-path",
+        type=str,
+        default="datasets/",
+    )
+
+    parser.add_argument(
+        "--dataset-name",
+        type=str,
+        default="training_set",
+    )
+
+    parser.add_argument("--no-proprio", action="store_true")
+
+    parser.add_argument(
+        "--use-depth",
+        action="store_true",
+    )
+
+    args = parser.parse_args()
+
+    hdf5_path = args.demo_file
+    f = h5py.File(hdf5_path, "r")
+    # env_name = f["data"].attrs["env"]
+
+    # env_args = f["data"].attrs["env_info"]
+    # env_kwargs = json.loads(f["data"].attrs["env_info"])
+
+    env_name = f["data"].attrs["env"]
+
+    env_args = f["data"].attrs["env_info"]
+    env_kwargs = json.loads(f["data"].attrs["env_info"])
+
+    problem_info = json.loads(f["data"].attrs["problem_info"])
+    problem_info["domain_name"]
+    problem_name = problem_info["problem_name"]
+    language_instruction = problem_info["language_instruction"]
+
+    # list of all demonstrations episodes
+    demos = list(f["data"].keys())
+
+    bddl_file_name = f["data"].attrs["bddl_file_name"]
+
+    bddl_file_dir = os.path.dirname(bddl_file_name)
+    # replace_bddl_prefix = "/".join(bddl_file_dir.split("bddl_files/")[:-1] + "bddl_files")
+
+    # hdf5_path = os.path.join(get_libero_path("datasets"), bddl_file_dir.split("bddl_files/")[-1].replace(".bddl", "_demo.hdf5"))
+
+    output_parent_dir = Path(hdf5_path).parent
+    output_parent_dir.mkdir(parents=True, exist_ok=True)
+
+    #上下文指定最后的hdf5文件输出的路径，原版代码似乎有问题，是一个路径，并没有具体到一个文件，我注释了。我实现的是直接在demofile的相同目录下生成了一个demo_full.hdf5
+    path_prefix, path_suffix = os.path.splitext(hdf5_path)
+    hdf5_path = path_prefix + "_full" + path_suffix
+
+
+    # #测试路径
+    # hdf5_path = "/home/bwshen/LIBERO/demonstration_data/robosuite_ln_libero_tabletop_manipulation_1722077082_394896_pick_the_akita_black_bowl_between_the_plate_and_the_ramekin_and_place_it_on_the_plate/test.hdf5"
+    # h5py_f = h5py.File(hdf5_path, "w")
+
+    # grp = h5py_f.create_group("data")
+
+    # grp.attrs["env_name"] = env_name
+    # grp.attrs["problem_info"] = f["data"].attrs["problem_info"]
+    # grp.attrs["macros_image_convention"] = macros.IMAGE_CONVENTION
+
+    libero_utils.update_env_kwargs(
+        env_kwargs,
+        bddl_file_name=bddl_file_name,
+        has_renderer=not args.use_camera_obs,
+        has_offscreen_renderer=args.use_camera_obs,
+        ignore_done=True,
+        use_camera_obs=args.use_camera_obs,
+        camera_depths=args.use_depth,
+        camera_names=[
+            "robot0_eye_in_hand",
+            "agentview",
+        ],
+        reward_shaping=True,
+        control_freq=20,
+        camera_heights=128,
+        camera_widths=128,
+        camera_segmentations=None,
+    )
+
+    # grp.attrs["bddl_file_name"] = bddl_file_name
+    # grp.attrs["bddl_file_content"] = open(bddl_file_name, "r").read()
+    # print(grp.attrs["bddl_file_content"])
+
+    env = TASK_MAPPING[problem_name](
+        **env_kwargs,
+    )
+
+    env_args = {
+        "type": 1,
+        "env_name": env_name,
+        "problem_name": problem_name,
+        "bddl_file": f["data"].attrs["bddl_file_name"],
+        "env_kwargs": env_kwargs,
+    }
+
+    # grp.attrs["env_args"] = json.dumps(env_args)
+    # print(grp.attrs["env_args"])
+    total_len = 0
+    demos = demos
+
+    cap_index = 5
+
+    print("Playback begin.")
+
+    for (i, ep) in enumerate(demos):
+        print("Playing back episode... (press ESC to quit)")
+        
+
+        # # select an episode randomly
+        # read the model xml, using the metadata stored in the attribute for this episode
+        model_xml = f["data/{}".format(ep)].attrs["model_file"]
+        reset_success = False
+        while not reset_success:
+            try:
+                env.reset()
+                reset_success = True
+            except:
+                continue
+
+        model_xml = libero_utils.postprocess_model_xml(model_xml, {})
+
+        if not args.use_camera_obs:
+            env.viewer.set_camera(0)
+
+        # load the flattened mujoco states
+        states = f["data/{}/states".format(ep)][()]
+        actions = np.array(f["data/{}/actions".format(ep)][()])
+
+        num_actions = actions.shape[0]
+
+        init_idx = 0
+        env.reset_from_xml_string(model_xml)
+        env.sim.reset()
+        env.sim.set_state_from_flattened(states[init_idx])
+        env.sim.forward()
+        model_xml = env.sim.model.get_xml()
+
+
+
+        for j, action in enumerate(actions):
+
+            obs, reward, done, info = env.step(action)
+
+            if j < num_actions - 1:
+                # ensure that the actions deterministically lead to the same recorded states
+                state_playback = env.sim.get_state().flatten()
+                # assert(np.all(np.equal(states[j + 1], state_playback)))
+                err = np.linalg.norm(states[j + 1] - state_playback)
+
+                if err > 0.01:
+                    print(
+                        f"[warning] playback diverged by {err:.2f} for ep {ep} at step {j}"
+                    )
+
+            # Skip recording because the force sensor is not stable in
+            # the beginning
+            if j < cap_index:
+                continue
+
+
+
+            env.render()
+
+     
+
+    env.close()
+
+    # h5py_f.close()
+    f.close()
+
+    print("Playback done.")
+
+
+if __name__ == "__main__":
+    main()

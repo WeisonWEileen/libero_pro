@@ -30,6 +30,8 @@ from termcolor import colored
 
 from scipy.spatial.transform import Rotation as R
 
+previous_value = 0
+
 def collect_human_trajectory(
     env, device, arm, env_configuration, problem_info, remove_directory=[]
 ):
@@ -45,6 +47,8 @@ def collect_human_trajectory(
         env_configuration (str): specified environment configuration
     """
 
+    global previous_value
+    
     reset_success = False
     while not reset_success:
         try:
@@ -94,13 +98,22 @@ def collect_human_trajectory(
         # print all the states
         # print("Obs: ",obs.keys())
         
-        print("Action: ", action)
-        print("Obs: ", obs["robot0_eef_quat"])
+
+
+        # print("Action: ", action)
+        # print("Obs: ", obs["robot0_eef_quat"])
         # 将四元数转换为Rotation对象
         r = R.from_quat(obs["robot0_eef_quat"])
         # 将Rotation对象转换为欧拉角 (假设使用 'xyz' 顺序)
         euler_angles = r.as_euler('xyz', degrees=True)
-        print("Euler angles: ", euler_angles)
+        delta = euler_angles[1] - previous_value
+        # print("Euler angles: ", euler_angles, "Delta: ", delta)
+        previous_value = euler_angles[1]
+
+        cv2.namedWindow("eyeinhandview", 0)
+        cv2.resizeWindow("eyeinhandview", 600, 600) 
+        cv2.imshow("eyeinhandview", cv2.flip(obs["robot0_eye_in_hand_image"],1))
+        cv2.moveWindow("eyeinhandview",1400,300)
 
 
 
@@ -159,6 +172,7 @@ def gather_demonstrations_as_hdf5(
             including controller and robot info
     """
 
+     
     hdf5_path = os.path.join(out_dir, "demo.hdf5")
     f = h5py.File(hdf5_path, "w")
 
@@ -171,7 +185,7 @@ def gather_demonstrations_as_hdf5(
     for ep_directory in os.listdir(directory):
         # print(ep_directory)
         if ep_directory in remove_directory:
-            # print("Skipping")
+            print("Skipping")
             continue
         state_paths = os.path.join(directory, ep_directory, "state_*.npz")
         states = []
@@ -206,9 +220,9 @@ def gather_demonstrations_as_hdf5(
         ep_data_grp.create_dataset("states", data=np.array(states))
         ep_data_grp.create_dataset("actions", data=np.array(actions))
 
-        print("-------states-------")
-        print(states)
-        print("---------states-----")
+        # print("-------states-------")
+        # print(states)
+        # print("---------states-----")
 
     # write dataset attributes (metadata)
     now = datetime.datetime.now()
@@ -280,7 +294,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--num-demonstration",
         type=int,
-        default=50,
+        default=10,
         help="How much to scale rotation user inputs",
     )
     parser.add_argument("--bddl-file", type=str, default=None)
@@ -326,10 +340,24 @@ if __name__ == "__main__":
         bddl_file_name=args.bddl_file,
         **config,
         has_renderer=True,
-        has_offscreen_renderer=False,
+        # has_offscreen_renderer=False,
         render_camera=args.camera,
         ignore_done=True,
-        use_camera_obs=False,
+        # use_camera_obs=False,
+
+
+
+        # weison change begin
+        # to get show another view assist human to control when collecting demonstrations
+        has_offscreen_renderer = True,
+        use_camera_obs = True,
+        camera_names=[
+            "robot0_eye_in_hand",
+            "agentview",
+        ],
+        # weison change end
+
+
         reward_shaping=True,
         control_freq=20,
     )

@@ -10,7 +10,7 @@ Arguments:
     --visualize-gripper (optional): If set, will visualize the gripper site
 
 Example:
-    $ python playback_demonstrations_from_hdf5.py --folder ../models/assets/demonstrations/lift/
+    $ python playback_demonstrations_from_hdf5.py --folder ../models/assets/demonstrations/lift/    
 """
 
 import argparse
@@ -40,6 +40,7 @@ if __name__ == "__main__":
     demo_path = args.folder
     hdf5_path = os.path.join(demo_path, "demo.hdf5")
     f = h5py.File(hdf5_path, "r")
+    # 为什么这个变量没有使用
     env_name = f["data"].attrs["env"]
     env_info = json.loads(f["data"].attrs["env_info"])
 

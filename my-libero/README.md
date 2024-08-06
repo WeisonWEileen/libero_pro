@@ -100,16 +100,17 @@ python ./scripts/create_dataset.py --demo-file  /home/bwshen/LIBERO/demonstratio
 
 https://myhdf5.hdfgroup.org/
 
-如果想看人操控的playback,可以运行（这个运行参数并不会生成一个新的完整的```hdf5```文件）
+### 回放功能
+路径名称为，demo的名称
 
 ```
-python ./scripts/create_dataset.py --demo-file /home/bwshen/LIBERO/demonstration_data/robosuite_ln_libero_tabletop_manipulation_1722077082_394896_pick_the_akita_black_bowl_between_the_plate_and_the_ramekin_and_place_it_on_the_plate/demo.hdf5
+python ./my-libero/scripts/playback_test.py --demo-file /home/bwshen/LIBERO/demonstration_data/robosuite_ln_libero_tabletop_manipulation_1722950522_9558637_pick_the_akita_black_bowl_between_the_plate_and_the_ramekin_and_place_it_on_the_plate/demo.hdf5
 ```
 
 ### 单位
 ```Action```的posistion方面的单位是```cm```，```Obs```的单位是```m```
 <div style="text-align: center;">
-	<img src="./docs/image.png" alt="Alt Text" width="400" height="320" />
+	<img src="./docs/image.png" alt="Alt Text" width="400" height="250" />
 </div>
 
 ```Action```的rotation方面，分别从弧度和角度方面看似乎没有单位对应的关系
@@ -118,9 +119,14 @@ python ./scripts/create_dataset.py --demo-file /home/bwshen/LIBERO/demonstration
 	<img src="./docs/com.png" alt="Alt Text" width="400" height="320" />
 </div>
 
+单独给action 0.01
+x:0.06
 
+y: 0.05
 
-最终的step的最终的结算的源代码
+z:0.01对应的是0.06在角度上
+
+最终的step的最终的解算的源代码
 
 <div style="text-align: center;">
 	<img src="./docs/image-1.png" alt="Alt Text" width="400" height="320" />
